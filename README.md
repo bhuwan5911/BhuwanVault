@@ -56,16 +56,11 @@ To run this project locally, you need a local web server (due to browser securit
         ```bash
         python -m http.server
         ```
-
-3.  **Open in Browser**
-    *   Navigate to `http://localhost:5500` (or your server's port).
-
 ---
 
 ## 👨‍💻 Author
 
 **Bhuwan Kumar**
-*   [GitHub](https://github.com/bhuwan5911)
 *   [LinkedIn](https://www.linkedin.com/in/bhuwan-kumar-b794432b3/)
 
 ---

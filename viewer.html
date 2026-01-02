@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BhuwanVault | Code Viewer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .viewer-container {
+            display: flex;
+            height: calc(100vh - 100px);
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid var(--card-border);
+            padding: 1rem;
+        }
+
+        .file-list {
+            list-style: none;
+        }
+
+        .file-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover,
+        .file-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .code-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .code-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .filename-display {
+            font-weight: 600;
+        }
+
+        #codeContent {
+            flex: 1;
+            padding: 1.5rem;
+            overflow: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre;
+            color: #d4d4d4;
+            tab-size: 4;
+            line-height: 1.5;
+        }
+
+        .back-nav {
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .copy-btn {
+            background: var(--accent-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <nav class="back-nav">
+        <a href="index.html" class="btn btn-secondary" style="flex: 0 0 auto;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Vault
+        </a>
+        <h2 id="projectTitle" style="margin: 0;">Project Name</h2>
+    </nav>
+
+    <div class="viewer-container">
+        <div class="sidebar">
+            <ul class="file-list">
+                <li class="file-item active" onclick="loadFile('index.html')">
+                    <i class="fa-brands fa-html5"></i> index.html
+                </li>
+                <li class="file-item" onclick="loadFile('style.css')">
+                    <i class="fa-brands fa-css3-alt"></i> style.css
+                </li>
+                <li class="file-item" onclick="loadFile('script.js')">
+                    <i class="fa-brands fa-js"></i> script.js
+                </li>
+                <li class="file-item" onclick="loadFile('app.js')">
+                    <i class="fa-brands fa-js"></i> app.js
+                </li>
+            </ul>
+        </div>
+        <div class="code-area">
+            <div class="code-header">
+                <span id="currentFile" class="filename-display">index.html</span>
+                <button class="copy-btn" onclick="copyCode()">
+                    <i class="fa-regular fa-copy"></i> Copy Code
+                </button>
+            </div>
+            <div id="codeContent">Select a file to view...</div>
+        </div>
+    </div>
+
+    <script src="background.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const project = params.get('project');
+
+        if (project) {
+            document.getElementById('projectTitle').innerText = project.replace(/[-_]/g, ' ');
+            loadFile('index.html'); // Load default
+        }
+
+        async function loadFile(filename) {
+            // Update UI
+            document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+            const activeItem = [...document.querySelectorAll('.file-item')].find(el => el.innerText.includes(filename));
+            if (activeItem) activeItem.classList.add('active');
+
+            document.getElementById('currentFile').innerText = filename;
+            const codeEl = document.getElementById('codeContent');
+            codeEl.innerText = 'Loading...';
+
+            try {
+                // Try to fetch file
+                const path = `./${project}/${filename}`;
+                const res = await fetch(path);
+
+                if (!res.ok) throw new Error('File not found');
+
+                const text = await res.text();
+                // Simple HTML escaping
+                codeEl.innerText = text;
+            } catch (e) {
+                codeEl.innerText = `// Could not load ${filename}.\n// It might not exist in this project.\n// Error: ${e.message}`;
+            }
+        }
+
+        function copyCode() {
+            const text = document.getElementById('codeContent').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => btn.innerHTML = original, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>

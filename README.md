@@ -42,8 +42,8 @@ To run this project locally, you need a local web server (due to browser securit
 
 1.  **Clone the Repository**
     ```bash
-    git clone https://github.com/bhuwan5911/100-Front-End-Projects.git
-    cd 100-Front-End-Projects
+    git clone https://github.com/bhuwan5911/BhuwanVault.git
+    cd BhuwanVault
     ```
 
 2.  **Start a Local Server**

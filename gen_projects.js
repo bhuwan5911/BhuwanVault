@@ -3,7 +3,7 @@ const path = require('path');
 
 const ROOT_DIR = process.cwd();
 const OUTPUT_FILE = path.join(ROOT_DIR, 'projects.json');
-const GITHUB_BASE_URL = 'https://github.com/55Pranjal/100-Front-End-Projects/tree/master/'; // Assuming master, commonly used for this repo type
+const GITHUB_BASE_URL = 'https://github.com/bhuwan5911/BhuwanVault/tree/main/'; // Pointing to main branch of BhuwanVault
 
 const IGNORE_DIRS = [
     '.git',
